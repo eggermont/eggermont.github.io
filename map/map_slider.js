@@ -9,6 +9,7 @@ var margin = {
 var width = 1060 - margin.left - margin.right;
 var height = 800 - margin.bottom - margin.top;
 
+
 /**
 ** Intro code for merge
 */
@@ -33,6 +34,47 @@ var bbSwell = {
     x: 0,
     y: 600
 }
+
+var color2 = d3.scale.category20();
+
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+var sliderCanvas = d3.select("#slider").append("svg").attr({ //created slider svg
+  width: 600 ,
+  height: 20,
+  })
+  
+var sliderVis = sliderCanvas.append("g").attr({
+  //transform: "translate(" + margin.left + "," + margin.top + ")"
+})  
+
+var month = [];
+
+var months = new Array();
+months[0] = "JanFeb";
+months[1] = "JanFeb";
+months[2] = "MarApr";
+months[3] = "MarApr";
+months[4] = "MayJun";
+months[5] = "MayJun";
+months[6] = "JulAug";
+months[7] = "JulAug";
+months[8] = "SepOct";
+months[9] = "SepOct";
+months[10] = "NovDec";
+months[11] = "NovDec";  
+
+var month_name = [];
+var string1 = [];
+var string2 = [];
+
+//var color_temp = d3.scale.ordinal()
+	//.domain(range[, 30)
+	//.range(
+
 
 var detailCanvas = d3.select("#detailVis").append("svg").attr({
   width: 450 + margin.left + margin.right,
@@ -88,7 +130,7 @@ d3.json("world-110m2.json", function(error, topology) {
       .attr("d", path)
 	  .on("click", clicked)
 	  
-d3.csv("../data/Site_table_5.csv", function(error, data) {
+d3.csv("Site_table_5.csv", function(error, data) {
     dataSet = data;
         g.selectAll("circle")
           .data(data)
@@ -96,6 +138,79 @@ d3.csv("../data/Site_table_5.csv", function(error, data) {
 		  .append("circle")
 		  .filter(function(d) { return d.Country != null ? this : null; })
 
+
+		// slider
+
+	var x = d3.time.scale()
+    .domain([new Date(2012, 12), new Date(2013, 12)])
+    .range([0, 600]);
+
+var brush = d3.svg.brush()
+    .x(x)
+    .extent([new Date(2013, 2), new Date(2013, 3)])
+    .on("brushend", brushended);
+
+sliderVis.append("rect")
+    .attr("class", "grid-background")
+    .attr("width", 600)
+    .attr("height", 10);
+
+sliderVis.append("g")
+    .attr("class", "x grid")
+    //.attr("transform", "translate(0," + 100 + ")")
+    .call(d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(d3.time.month, 2)
+        .tickSize(10)
+        .tickFormat(""))
+  .selectAll(".tick")
+   // .classed("minor", function(d) { return d.getHours(); });
+
+sliderVis.append("g")
+    .attr("class", "x axis")
+    //.attr("transform", "translate(0," + 2 + ")")
+    .call(d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .ticks(d3.time.month)
+      .tickPadding(0))
+  .selectAll("text")
+    .attr("x", 6)
+    .style("text-anchor", null);
+
+var gBrush =sliderVis.append("g")
+    .attr("class", "brush")
+    .call(brush)
+    .call(brush.event)
+
+gBrush.selectAll("rect")
+    .attr("height", 10);
+
+function brushended() {
+  if (!d3.event.sourceEvent) return; // only transition after input
+  var extent0 = brush.extent(),
+      extent1 = extent0.map(d3.time.month.round)
+	  month = extent1[0].getMonth()
+	  month_name = months[month]
+	  string1 = "WaterTemp_"+month_name
+	  string2 = "TypicalSwell_"+month_name
+	  
+	  
+	  
+   //if empty when rounded, use floor & ceil instead
+  if (extent1[0] >= extent1[1]) {
+  extent1[0] = d3.time.month.floor(extent0[0]);
+  extent1[1] = d3.time.month.ceil(extent0[1]);
+  }
+
+  d3.select(this).transition()
+      .call(brush.extent(extent1))
+      .call(brush.event)
+	  
+}	  
+
+	
     /*
     ** Data wrangling
     */
@@ -153,7 +268,9 @@ d3.selectAll(".filter_button").on("change", function() {
   var type = this.value, 
   // I *think* "inline" is the default.
   display = this.checked ? "inline" : "none";
-
+	
+  
+  
 svg.selectAll("circle")
     .filter(function(d) { return d.Experience === type })
 	.attr("cx", function(d) {
@@ -162,8 +279,10 @@ svg.selectAll("circle")
     .attr("cy", function(d) {
                    return projection([d.Longitude, d.Latitude])[1];
            })
-    .attr("r", 2)
-    .style("fill", "orange")
+    .attr("r", function(d){;
+		return d[string2]*2})
+    .style("fill", function(d){
+		return color2(d[string1])})
     .style("opacity", .7)
     .attr("display", display)
   .on("click", function(d) {
@@ -176,7 +295,7 @@ svg.selectAll("circle")
             div.transition()        
                 .duration(200)      
                 .style("opacity", .9);      
-            div .html(d.Spot + ", " + d.Country)
+            div .html("Surfspot: ".bold() + capitaliseFirstLetter(d.Spot).replace(/[\._ ,:-]+/g, " ") + "</br>" + "Country: ".bold() + capitaliseFirstLetter(d.Country).replace(/[\._ ,:-]+/g, " ") + "</br>" + "Wave quality: ".bold() + d["Wave quality"] + "</br>" + "Type: ".bold() + d["Type"]  + "</br>" + "Direction: ".bold() + d["Direction"]  + "</br>" + "Bottom: ".bold() + d["Bottom"]  + "</br>" + "Power: ".bold() + d["Power"]  + "</br>" + "Normal length: ".bold() + d["Normal length"] )
                 .style("left", (d3.event.pageX) + "px")     
                 .style("top", (d3.event.pageY - 28) + "px");    
             })                  
@@ -199,6 +318,7 @@ var div = d3.select("body").append("div")
 });
 
 })
+
 
 /*
 **
@@ -491,6 +611,7 @@ var createDetailVis = function(data, name){
 
 }
 
+
 var updateDetailVis = function(data, name){
     detailVis.selectAll(".axis").data(data).exit().remove();
     detailVis.selectAll(".dot").data(data).exit().remove();
@@ -498,7 +619,12 @@ var updateDetailVis = function(data, name){
     detailVis.selectAll(".bar").data(data).exit().remove();
     detailVis.selectAll(".swell_bar").data(data).exit().remove();
     detailVis.selectAll(".label").data(data).exit().remove();
+	detailVis.selectAll(".circle").data(data).exit().remove();
 }
+
+var updatesliderVis = function(data, name){
+ svg.selectAll(".circles").data(data).exit().remove();
+ }
 
 /*
 **

@@ -111,11 +111,47 @@ path {
   fill: grey;
 }
 
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+
 div.tooltip {   
 		  position: absolute;           
-		  text-align: center;           
-		  width: 220px;                  
-		  height: 30px;                 
+		  text-align: left;           
+		  width: 240px;                  
+		  height: 120px;                 
 		  padding: 2px;             
 		  font: 12px sans-serif;        
 		  background: #a1d99b;   
@@ -128,19 +164,21 @@ div.tooltip {
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/colorbrewer.v1.min.js"></script>
 <table>
     <tr><td><div id="vis"></div></td><td>
 <img id="logo" src="../sketches/logo.png"><div id="detailVis"></div></td></tr>
+<tr><td> <div id ="slider"></div></td></tr> 
 </table>
 
 
-<script src="map.js"></script>
+<script src="map_slider.js"></script>
 
 <div class="filter_options">
 <input class="filter_button" id="a_button" type="checkbox" value="All surfers">All Surfers</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Beginners wave">Beginners</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Experienced surfers">Experienced Surfers</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Pros or kamikaze only...">Pros</input><br>
+<input class="filter_button" id="b_button" type="checkbox" value="Beginners wave">Beginners</input><br>
+<input class="filter_button" id="c_button" type="checkbox" value="Experienced surfers">Experienced Surfers</input><br>
+<input class="filter_button" id="d_button" type="checkbox" value="Pros or kamikaze only...">Pros</input><br>
 </div>
 
 
