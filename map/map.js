@@ -40,6 +40,11 @@ var bbParallel = {
   y: 350
 }
 
+function capitaliseFirstLetter(string)
+{
+   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 var canvas = d3.select("#vis").append("svg").attr({
     width: width + margin.left + margin.right,
     height: height + margin.top + margin.bottom
@@ -293,7 +298,7 @@ svg.selectAll("circle")
             div.transition()        
                 .duration(200)      
                 .style("opacity", .9);      
-            div .html(d.Spot + ", " + d.Country)
+            div .html("Surfspot: ".bold() + capitaliseFirstLetter(d.Spot).replace(/[\._ ,:-]+/g, " ") + "</br>" + "Country: ".bold() + capitaliseFirstLetter(d.Country).replace(/[\._ ,:-]+/g, " ") + "</br>" + "Wave quality: ".bold() + d["Wave quality"] + "</br>" + "Type: ".bold() + d["Type"]  + "</br>" + "Direction: ".bold() + d["Direction"]  + "</br>" + "Bottom: ".bold() + d["Bottom"]  + "</br>" + "Power: ".bold() + d["Power"]  + "</br>" + "Normal length: ".bold() + d["Normal length"])
                 .style("left", (d3.event.pageX) + "px")     
                 .style("top", (d3.event.pageY - 28) + "px");    
             })                  
@@ -589,7 +594,7 @@ var createDetailVis = function(data, name){
             .attr("class", "name")
             .attr("x", 0)
             .attr("y", -25)
-            .text(name);
+            .text(capitaliseFirstLetter(name).replace(/[\._ ,:-]+/g, " "));
 
         detailVis.append("text")
             .attr("class", "label")
