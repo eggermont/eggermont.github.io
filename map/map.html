@@ -4,12 +4,26 @@
 
 /**/
     svg{
+    	font:10px sans-serif;
         /*background: #eeeeee;*/
     }
 
+	.name {
+		font-size: 20px;
+	}
+
+	.filter_options {
+		position: absolute;
+		margin-top: -250px;
+	}
+
+	#parallelVis {
+		margin-top: 10px;
+	}
+
     #detailVis {
         position: absolute;
-        margin-top: -250px;
+        margin-top: -175px;
     }
 
     #logo {
@@ -56,39 +70,10 @@
 
     .axis line,
     .axis path {
-        fill: none;
-        stroke: lightgrey;
+    	fill: none;
+        stroke: #000;
+  		shape-rendering: crispEdges;
     }
-
-    .station{
-        fill:lightgrey;
-        opacity: .7;
-    }
-    .station.hasData{
-        fill:blue;
-        opacity: 1;
-    }
-    .hourLine{
-        fill:none;
-        stroke:steelblue;
-
-    }
-    .brush .extent{
-        fill:gray;
-        opacity: .3;
-    }
-
-/*    div.tooltip {   
-      position: absolute;           
-      text-align: center;           
-      width: 60px;                  
-      height: 28px;                 
-      padding: 2px;             
-      font: 15px sans-serif bold;        
-      border: 0px;      
-      border-radius: 8px;           
-      pointer-events: none;         
-    }*/
 
     .label {
         font-weight: bold;
@@ -124,24 +109,101 @@ div.tooltip {
 		  pointer-events: none;         
 }
 
+/* Parallel Coordinates CSS */
+
+.background path {
+  fill: none;
+  stroke: none;
+  stroke-width: 20px;
+  pointer-events: stroke;
+}
+
+.foreground path {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.parallellabel {
+  -webkit-transition: fill 125ms linear;
+}
+
+.active .parallellabel:not(.inactive) {
+  font-weight: bold;
+}
+
+.parallellabel.inactive {
+  fill: #ccc;
+}
+
+.foreground path.inactive {
+  stroke: #ccc;
+  stroke-opacity: .5;
+  stroke-width: 1px;
+}
+
+/* Slider */
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+
+/*div.tooltip {   
+		  position: absolute;           
+		  text-align: center;           
+		  width: 220px;                  
+		  height: 30px;                 
+		  padding: 2px;             
+		  font: 12px sans-serif;        
+		  background: #a1d99b;   
+		  border: 0px;      
+		  border-radius: 8px;           
+		  pointer-events: none;         
+}*/
+
+
+
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="../libs/underscore.js"></script>
 <table>
-    <tr><td><div id="vis"></div></td><td>
-<img id="logo" src="../sketches/logo.png"><div id="detailVis"></div></td></tr>
+    <tr><td><div id="vis"></div></td>
+    <td><img id="logo" src="../sketches/logo.png">
+
+    	<div class="filter_options">
+			<input class="filter_button" id="a_button" type="checkbox" value="All surfers">All Surfers</input><br>
+			<input class="filter_button" id="a_button" type="checkbox" value="Beginners wave">Beginners</input><br>
+			<input class="filter_button" id="a_button" type="checkbox" value="Experienced surfers">Experienced Surfers</input><br>
+			<input class="filter_button" id="a_button" type="checkbox" value="Pros or kamikaze only...">Pros</input><br>
+		</div>
+
+
+
+    <div id="detailVis"></div></td></tr>
+    <tr><td> <div id ="slider"></div></td></tr> 
+    <tr><td><div id="parallelVis"></td></tr>
 </table>
 
-
 <script src="map.js"></script>
-
-<div class="filter_options">
-<input class="filter_button" id="a_button" type="checkbox" value="All surfers">All Surfers</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Beginners wave">Beginners</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Experienced surfers">Experienced Surfers</input><br>
-<input class="filter_button" id="a_button" type="checkbox" value="Pros or kamikaze only...">Pros</input><br>
-</div>
 
 
 </body>
