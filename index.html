@@ -5,10 +5,10 @@
 </head>
 <body>
 <script language="Javascript">
-if (geoplugin_countryName() != 'China') {
-	window.location = "http://eager-analytics.weebly.com";
-	} else if (geoplugin_countryName() == 'China') {
+if (geoplugin_countryName() == 'China') {
 	window.location = "http://eager.wpengine.com/";
+	} else {
+	window.location = "http://eager-analytics.weebly.com";
 	}
 </script>
 
